@@ -16,7 +16,7 @@ setuptools.setup(
     "Programming Language :: Python :: 3.6"
         ],
     keywords='Yinotify',
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_packages(exclude=['tests']),
     author='Yijun Zhu',
     author_email='peter_zyj@hotmail.com',
     license='GPL 2',
