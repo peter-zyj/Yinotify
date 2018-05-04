@@ -1,28 +1,3 @@
-Fork me on GitHub
-Online reStructuredText editor
-Editor
-About
-##
-**
-=
--
-^
-"
-*
----------------
-Bold
-Italic
-Monospace
----------------
-Indent
-Remove indent
----------------
-Bulleted List
-Numeric List
----------------
-Picture
-Link
-
 ========
 Overview
 ========
