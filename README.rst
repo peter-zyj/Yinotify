@@ -1,27 +1,4 @@
-Fork me on GitHub
-Online reStructuredText editor
-Editor
-About
-##
-**
-=
--
-^
-"
-*
----------------
-Bold
-Italic
-Monospace
----------------
-Indent
-Remove indent
----------------
-Bulleted List
-Numeric List
----------------
-Picture
-Link
+|Build\_Status|
 
 ========
 Overview
@@ -165,3 +142,7 @@ Pytest Example::
 
         assert result["test_events_IN_DELETE"] == True
         print("--------------------------------------------------------")
+
+
+.. |Build_Status| image:: https://api.travis-ci.org/peter-zyj/Yinotify.svg?branch=master
+   :target: https://travis-ci.org/peter-zyj/Yinotify
