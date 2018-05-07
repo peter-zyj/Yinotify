@@ -1,12 +1,16 @@
 from Yinotify import adapters as Yinotify
-import os,time,pdb
+import os,time,pdb,shutil
 from multiprocessing import Manager
+import pytest
 
 global folder,result
 result = Manager().dict()
 
 #folder = os.getcwd()+"/tests/monDIR"
 folder = os.path.dirname(os.path.abspath(__file__))+"/monDIR"
+
+shutil.rmtree(folder)
+os.popen("mkdir %s"%(folder))
 print ("\nMonitor folder==",folder)
 
 def printEvent(timeSlot,case):
@@ -43,6 +47,7 @@ def test_events_IN_ISDIR():
     assert result["test_events_IN_ISDIR"] == True
     print("--------------------------------------------------------")
 
+@pytest.mark.zhu
 def test_events_IN_OPEN():
     result["test_events_IN_OPEN"] = False
     timeSlot = time.time()
