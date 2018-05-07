@@ -1,4 +1,5 @@
 |Build\_Status|
+|Coverage\_Status|
 
 ========
 Overview
@@ -146,3 +147,5 @@ Pytest Example::
 
 .. |Build_Status| image:: https://api.travis-ci.org/peter-zyj/Yinotify.svg?branch=master
    :target: https://travis-ci.org/peter-zyj/Yinotify
+.. |Coverage_Status| image:: https://coveralls.io/repos/github/peter-zyj/Yinotify/badge.svg?branch=master
+   :target: https://coveralls.io/github/peter-zyj/Yinotify?branch=master
