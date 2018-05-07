@@ -17,6 +17,7 @@ setuptools.setup(
         ],
     keywords='Yinotify',
     packages=setuptools.find_packages(exclude=['tests']),
+    url='https://github.com/peter-zyj/Yinotify',
     author='Yijun Zhu',
     author_email='peter_zyj@hotmail.com',
     license='GPL 2',
