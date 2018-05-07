@@ -37,14 +37,17 @@ _STRUCT_HEADER_LENGTH = struct.calcsize(_HEADER_STRUCT_FORMAT)
 _IS_DEBUG = bool(int(os.environ.get('DEBUG', '0')))
 
 
-class EventTimeoutException(Exception):
-    pass
-
 
 class TerminalEventException(Exception):
     def __init__(self, type_name, event):
         super(TerminalEventException, self).__init__(type_name)
         self.event = event
+
+
+class YiError(Exception):
+    def __init__(self, description):
+        super(YiError, self).__init__(description)
+
 
 
 class Inotify(object):
@@ -277,14 +280,22 @@ class Yivent(object):
         manager_obj3 = Manager()
         self.times = manager_obj3.dict()     #detected events number
 
+        self.p1 = None
+        self.p2 = None
+        self.action_args = {}
+        self.deps = {}
 
         if event:
             event = event.strip().upper()
+
             if not self.wd:
                 self.wd = Inotify()
 
-            self.wd.add_watch(self.name)
-            self.events[event] = 0
+            for et in event.split(","):
+                self.wd.add_watch(self.name)
+                self.events[et] = 0
+
+        self.dependsAdd(event)
 
         if action and event:
             self.actions[event] = action
@@ -309,29 +320,60 @@ class Yivent(object):
             self.p2.start()
 
 
-    def loopExecution(self):
-        "TBD"
+    def dependsAdd(self,eventList):
+        elist = eventList.split(",")
+        for event in elist:
+            try:
+                if self.deps[event]:
+                    print("ERR:Dependency Check failed by Event Depends Existed! ")
+                    timeSlot = str(datetime.datetime.now())
+                    _LOGGER.debug(timeSlot+"::"+"ERR:Dependency Check failed by Event Depends Existed!")
+                    self.__del__()
+                    raise YiError(YiException,"ERR:Dependency Check failed by Event Depends Existed!")
 
+            except KeyError:
+                if elist.index(event) != 0:
+                    self.deps[event] = elist[elist.index(event)-1]
+                else:
+                    self.deps[event] = None
+
+#   def dependsCheck(self,eventList):
+#       "TBD"
+    def triggerCheck(self,eventList):
+        elist = eventList.split(",")
+#       print("debug1::",elist)
+#       print("debug2::",self.events)
+        if self.deps != {}:
+            res1 = [self.deps[x] for x in elist]
+            res2 = [self.events[y] for y in elist]
+            if 0 not in res2:
+                return True
+            else:
+#               print("debug3::",res2)
+                return False
+        else:
+            timeSlot = str(datetime.datetime.now())
+            _LOGGER.debug(timeSlot+"::"+"ERR:Trigger Check Check failed by empty dependancy dictionary!")
+            self.__del__()
+            raise YiError(YiException,"ERR:Trigger Check Check failed by empty dependancy dictionary!")
 
     def execute_action(self,event):
         print ("actions1")
         cnt = self.times[event]
+
         while True:
-            if cnt >=1 and self.events[event]>0:
+#           if cnt >=1 and self.events[event]>0 and not self.dependsCheck(event):
+            if cnt >=1 and self.triggerCheck(event): 
                 print ("actions2")
                 try:
                     print("Debug:execute_action:",event)
-                    if self.action_args[action]:
+                    action = self.actions[event]
+                    if not self.action_args[action]:
                         Process(target=self.actions[event], args=()).start()
                     else:
-                        Process(target=self.actions[event], args=(self.action_args[action],)).start()
+                        Process(target=self.actions[event], args=self.action_args[action]).start()
                     if self.times[event]>0 and self.times[event]<9999:
                         cnt -= 1
-#                   if self.times[event] > 9999 and self.events[event]>0:
-#                       Process(target=self.actions[event], args=()).start()
-#                   elif self.times[event]>0:
-#                       Process(target=self.actions[event], args=()).start()
-#                       cnt -= 1
                     time.sleep(1)
                 except KeyError:
                     print ("there is no such Event:[%s] registered"%(event))
@@ -347,13 +389,8 @@ class Yivent(object):
                 print ("Detected:loopCheck:",event)
                 for x in tEvents.keys():
                     if x in event[1]:
-                        print(self.events)
-                        print(self.events[x])
                         self.events[x] += 1
-                        "TBD-actions"
-#                       if self.times[x]>0:
-#                           self.actions[x]()
-#                           self.times[x] -= 1
+                        print(self.events)
 
 
     def registerEvent(self,event):
@@ -385,11 +422,18 @@ class Yivent(object):
 
     def __del__(self):
         self.wd.remove_watch(self.name)
-        self.p1.terminate()
-        self.p2.terminate()
+        if self.p1:
+            self.p1.terminate()
+            self.p1 = None
+
+        if self.p2:
+            self.p2.terminate()
+            self.p2 = None
+
         self.name = None
         self.events = None
         self.actions = None
+        del self.wd
         timeSlot = str(datetime.datetime.now())
         _LOGGER.debug(timeSlot+"::"+"Yivent CleanUp")
 
