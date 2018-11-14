@@ -17,7 +17,7 @@ Installing
 
 Install via *pip*::
 
-    $ sudo pip3 install Yinotify
+    $ sudo pip install Yinotify    //linux OS is Mandatory
 
 
 =======
