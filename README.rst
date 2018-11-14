@@ -17,7 +17,7 @@ Installing
 
 Install via *pip*::
 
-    $ sudo pip install Yinotify
+    $ sudo pip3 install Yinotify
 
 
 =======
