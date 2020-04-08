@@ -30,13 +30,13 @@ Simple Usage::
         def printEvent():
             print("Action triggered!!")
 
-        yiSample = Yinotify.fEvent(_target_folder,"IN_ISDIR",printEvent)
+        yiSample = Yinotify.Yivent(_target_folder,"IN_ISDIR",printEvent)
 
     exp2:
         def printEvent(arg):
             print("Action triggered!!",arg)
 
-        yiSample = Yinotify.fEvent(_target_folder,"IN_ISDIR",printEvent,action_args=("arg1",))
+        yiSample = Yinotify.Yivent(_target_folder,"IN_ISDIR",printEvent,action_args=("arg1",))
 
 =========
 Unit Test
